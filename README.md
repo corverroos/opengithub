@@ -1,6 +1,10 @@
-# opengithub
+# Opengithub
 
-Opengithub is a tool to open source code in Github. 
+> `opengithub` is a simple tool to open source code in Github. 
+
+It can also be used to quickly and easily share links to locally checked-out code.
+
+## Usage 
 
 1. Install `opengithub`:
 ```shell
