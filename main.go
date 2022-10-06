@@ -69,7 +69,11 @@ func run(file string, root string, branch string, open bool) error {
 
 	fmt.Printf("Found remote:%s, branch:%s, path:%s, line=%d\n", remote, branch, path, line)
 
-	uri := formatGitURL(remote, branch, path, line)
+	uri, err := formatGitURL(remote, branch, path, line)
+	if err != nil {
+		return err
+	}
+
 	fmt.Printf("🎉 %s\n", uri)
 
 	if open {
@@ -84,7 +88,11 @@ func run(file string, root string, branch string, open bool) error {
 // formatGitURL returns the git url to view the path and line.
 // It expects remote to be in the format git@github.com:{org}/{repo}.git.
 // It returns the url in the format: https://github.com/{org}/{repo}/blob/{branch}/{path}
-func formatGitURL(remote string, branch string, path string, line int) string {
+func formatGitURL(remote string, branch string, path string, line int) (string, error) {
+	if !strings.Contains(remote, "git@github.com:") {
+		return "", errors.New("only github repos supported")
+	}
+
 	resp := strings.Replace(remote, ":", "/", 1)
 	resp = strings.Replace(resp, "git@", "https://", 1)
 	resp = strings.Replace(resp, ".git", "/"+filepath.Join("blob", branch, path), 1)
@@ -92,7 +100,7 @@ func formatGitURL(remote string, branch string, path string, line int) string {
 		resp += fmt.Sprintf("#L%d", line)
 	}
 
-	return resp
+	return resp, nil
 }
 
 func findAbsPath(file string, root string) (string, error) {
