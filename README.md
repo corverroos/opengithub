@@ -33,4 +33,4 @@ opengithub
 
 ## Notes
 
-This is similar to the IntelliJ plugin [Open in Github](https://plugins.jetbrains.com/plugin/7190-open-in-github). But it doesn't work.
+This is similar to the IntelliJ plugin [Open in Github](https://plugins.jetbrains.com/plugin/7190-open-in-github) which I couldn't get to work.
