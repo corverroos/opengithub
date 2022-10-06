@@ -17,10 +17,19 @@ opengithub
 ```
 
 4. Optionally configure `opengithub`:
+   - Explicitly provide the file (default to clipboard): `--file=repo/folder/file.go:123`
    - Disable auto opening: `--open=false`
    - Root directory to search for resolve paths (defaults to current dir): `--root=/path/to/my/repos` or `export OPENGITHUB_ROOT=/path/to/my/repos`
    - Git branch to use (defaults to current branch): `--branch=main` or `export OPENGITHUB_BRANCH=main`
    - Concise alias: `alias ogh="opengithub --root=/path/to/my/repos --branch=main"`
+
+5. Configure it as an Intellij "External Tool":
+   - `Preferences > Tools > External Tools > Add`
+   - Program: `opengithub`
+   - Arguments: `--file=$FilePath$:$LineNumber$`
+   - Working Directory: `$ProjectFileDir$`
+   
+![Add IntelliJ External Tool](intellij.png "Add IntelliJ External Tool")
 
 ## Notes
 

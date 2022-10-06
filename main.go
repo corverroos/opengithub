@@ -1,10 +1,4 @@
-// Command opengithub provides a cli tool to open referenced source code from the clipboard in Github.
-//
-// Usage:
-//   - Copy a reference to a source code file (with optional line). E.g., opengithub/main.go:25
-//   - Shortcut in IntelliJ on MacOS: Alt-Shift-Command-C
-//   - Execute the command
-//   - opengithub --root=/path/containing/all/repos
+// Command opengithub provides a tool to open source code in Github.
 package main
 
 import (
@@ -20,6 +14,7 @@ import (
 )
 
 var (
+	file   = flag.String("file", "", "File (with optional line number) to open in github. Defaults to clipboard.")
 	root   = flag.String("root", os.Getenv("OPENGITHUB_ROOT"), "Root directory to search for relative paths")
 	branch = flag.String("branch", os.Getenv("OPENGITHUB_BRANCH"), "Git branch to use. Defaults to current branch")
 	open   = flag.Bool("open", true, "Set to false to disable opening in default browser")
@@ -27,25 +22,29 @@ var (
 
 func main() {
 	flag.Parse()
-	if err := run(*root, *branch, *open); err != nil {
+	if err := run(*file, *root, *branch, *open); err != nil {
 		fmt.Printf("❌ Fatal error: %v\n", err)
 		os.Exit(1)
 	}
 }
 
-func run(root string, branch string, open bool) error {
-	txt, err := readClipboard()
-	if err != nil {
-		return err
-	} else if txt == "" {
-		return errors.New("clipboard empty 👻")
-	} else if filepath.Ext(txt) == "" {
-		return fmt.Errorf("clipboard text not a file: '%v'", txt)
+func run(file string, root string, branch string, open bool) error {
+	if file == "" {
+		txt, err := readClipboard()
+		if err != nil {
+			return err
+		} else if txt == "" {
+			return errors.New("--file and clipboard empty 👻")
+		}
+		file = txt
+		fmt.Printf("Using clipboard text: %s\n", txt)
 	}
 
-	fmt.Printf("Using clipboard text: %s\n", txt)
+	if filepath.Ext(file) == "" {
+		return fmt.Errorf("clipboard text not a file: '%v'", file)
+	}
 
-	file, line, err := splitFileLine(txt)
+	file, line, err := splitFileLine(file)
 	if err != nil {
 		return err
 	}
@@ -90,7 +89,7 @@ func formatGitURL(remote string, branch string, path string, line int) string {
 	resp = strings.Replace(resp, "git@", "https://", 1)
 	resp = strings.Replace(resp, ".git", "/"+filepath.Join("blob", branch, path), 1)
 	if line != 0 {
-		resp += fmt.Sprintf("#%d", line)
+		resp += fmt.Sprintf("#L%d", line)
 	}
 
 	return resp
