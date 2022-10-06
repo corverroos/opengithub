@@ -25,9 +25,10 @@ opengithub
 
 5. Configure it as an Intellij "External Tool":
    - `Preferences > Tools > External Tools > Add`
-   - Program: `opengithub`
-   - Arguments: `--file=$FilePath$:$LineNumber$`
-   - Working Directory: `$ProjectFileDir$`
+     - Program: `opengithub`
+     - Arguments: `--file=$FilePath$:$LineNumber$`
+     - Working Directory: `$ProjectFileDir$`
+   - Then just select some code, then select `Tools > External Tools > opengithub`
    
 ![Add IntelliJ External Tool](intellij.png "Add IntelliJ External Tool")
 
